@@ -15,6 +15,7 @@ class UserSeeder extends Seeder
             'name' => 'Administrador',
             'email' => 'admin@admin.com',
             'password' => bcrypt('admin123'),
+            'level' => User::LEVEL_ADMIN,
         ]);
     }
 

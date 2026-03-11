@@ -27,8 +27,9 @@ php artisan storage:link || true
 echo "Instalando dependências Node..."
 npm install
 
-echo "Compilando assets do Vite..."
-npm run build
+# Rodar Vite em dev mode (hot reload)
+echo "Iniciando Vite (npm run dev) em background..."
+npm run dev -- --host 0.0.0.0 &
 
 echo "Iniciando servidor..."
 php artisan serve --host=0.0.0.0 --port=$PORT

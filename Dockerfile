@@ -21,10 +21,11 @@ COPY . .
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Instala dependências do Laravel
+# Instala dependências Laravel
 RUN composer install
 
 # Define entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 8000
+EXPOSE 5173

@@ -24,8 +24,8 @@ Todo o ambiente da aplicação é executado de forma **100% containerizada com D
 
 #### Clonar o projeto
 ```
-git clone https://github.com/homemmaquina/cnh-na-pratica/tree/develop
-cd cnh-na-pratica
+git clone https://github.com/edutorquato/crypticKey.git
+cd crypticKey
 ```
 
 #### Criar arquivo .env
@@ -42,6 +42,8 @@ docker compose up -d --build
 ```
 docker compose exec app composer install
 docker compose exec app npm install
+docker compose exec app npm install vuetify
+docker compose exec app npm install @mdi/font
 ```
 
 #### Gerar chave da aplicação
@@ -59,26 +61,11 @@ docker compose exec app php artisan storage:link
 docker compose exec app php artisan migrate --seed
 ```
 
-#### Login com o Google
-```
-docker compose exec app composer require laravel/socialite
-```
-
-### Configurar no .env
-
-#### Configuração do Login com Google
-
-```
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_REDIRECT_URI=https://url.com/auth/google/callback
-```
-
 ### 🧪 Comandos Úteis
 
 #### Limpar cache
 ```
-docker compose exec app php artisan optimize:clear
+docker compose exec app php artisan optimize
 ```
 #### Rodar migrations novamente
 ```
