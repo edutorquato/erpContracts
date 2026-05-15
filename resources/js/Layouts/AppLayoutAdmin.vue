@@ -30,7 +30,7 @@
 
         <v-app>
 
-            <v-navigation-drawer app permanent color="#2A3FA8">
+            <v-navigation-drawer app permanent color="#A9EBF0">
 
                 <v-list class="d-flex flex-column h-100">
 
@@ -38,7 +38,7 @@
                         <center><h2>ERP CONTRACTS</h2></center>
                     </v-list-item>
 
-                    <div class="mt-2">
+                    <div class="mt-1">
 
                         <!-- DASHBOARD -->
                         <v-list-item :href="route('admin.dashboard')">

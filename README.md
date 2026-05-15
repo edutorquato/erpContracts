@@ -147,7 +147,7 @@ O frontend foi desenvolvido utilizando arquitetura SPA com Inertia.js, proporcio
 ## 📥 Clonar repositório
 
 ```bash
-git clone URL_DO_REPOSITORIO
+git clone https://github.com/edutorquato/erpContracts.git
 ```
 
 ---
@@ -186,10 +186,10 @@ php artisan key:generate
 
 ---
 
-## 🗄 Rodar migrations
+## 🗄 Rodar migrations e seeds
 
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
 
 ---

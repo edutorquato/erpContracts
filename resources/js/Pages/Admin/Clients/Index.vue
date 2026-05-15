@@ -22,6 +22,9 @@ const clients = ref([...props.clients])
 
 const loading = ref(false)
 
+const dialog = ref(false)
+
+const errors = ref({})
 
 const snackbar = ref(false)
 
@@ -29,12 +32,6 @@ const snackbarText = ref('')
 
 const snackbarColor = ref('success')
 
-
-
-
-const dialog = ref(false)
-
-const errors = ref({})
 
 const search = ref('')
 

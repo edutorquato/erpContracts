@@ -15,7 +15,7 @@
 
     const dialog = ref(false)
 
-
+    const errors = ref({})
 
     const snackbar = ref(false)
 
