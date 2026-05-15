@@ -35,7 +35,7 @@
                 <v-list class="d-flex flex-column h-100">
 
                     <v-list-item class="justify-center">
-                        <center><h2>ERP CONTRACTS</h2></center>
+                        <center><h2>CONTRATOS E SERVIÇOS</h2></center>
                     </v-list-item>
 
                     <div class="mt-1">
