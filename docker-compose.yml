@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    container_name: crypticKey_app
+    container_name: erpContracts_app
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
@@ -15,12 +15,12 @@ services:
 
   db:
     image: mysql:8.0
-    container_name: crypticKey_db
+    container_name: erpContracts_db
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: crypticKey
-      MYSQL_USER: crypticKey
+      MYSQL_DATABASE: erpContracts
+      MYSQL_USER: erpContracts
       MYSQL_PASSWORD: secret
     ports:
       - "3306:3306"
@@ -29,11 +29,11 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: crypticKey_phpmyadmin
+    container_name: erpContracts_phpmyadmin
     restart: unless-stopped
     environment:
       PMA_HOST: db
-      PMA_USER: crypticKey
+      PMA_USER: erpContracts
       PMA_PASSWORD: secret
     ports:
       - "8002:80"

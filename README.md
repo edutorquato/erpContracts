@@ -1,101 +1,214 @@
-## CRYPTICKEY - Password Generator
+# ERP CONTRACTS
 
-Este projeto é uma ferramenta administrativa para geração de hashes de senha utilizando diferentes algoritmos criptográficos.
+Sistema de gestão de contratos e serviços desenvolvido como teste técnico utilizando Laravel e Vue.js.
 
-A aplicação permite que o usuário informe uma senha e escolha o tipo de criptografia desejado. Após a geração, o sistema retorna o hash correspondente, que pode ser utilizado para testes, integração com sistemas ou criação manual de registros de autenticação.
-
-### Algoritmos suportados
-
-Atualmente a ferramenta suporta os seguintes tipos de hash:
-
-- Bcrypt (Laravel) – padrão utilizado pelo framework Laravel para armazenamento seguro de senhas.
-- MD5
-- SHA1
-- SHA256
-- SHA512
-- Objetivo
-
-O objetivo da ferramenta é facilitar a geração rápida de hashes de senha durante o desenvolvimento ou manutenção do sistema, evitando a necessidade de scripts externos ou comandos no terminal.
+O sistema permite o gerenciamento completo de clientes, serviços e contratos, incluindo cálculo dinâmico de valores mensais e aplicação de regras de negócio.
 
 ---
 
-Este projeto foi desenvolvido utilizando **Laravel 12** no backend e **Vue.js 3.4** no frontend, com interface baseada em **Template Material**.
+# 🚀 Funcionalidades
 
-A autenticação é realizada por meio do **Laravel Breeze**, incluindo autenticação tradicional (email e senha) e autenticação social via **Google OAuth**.
+## 👤 Clientes
 
-Todo o ambiente da aplicação é executado de forma **100% containerizada com Docker**, garantindo padronização, facilidade de configuração e execução do projeto em qualquer ambiente de desenvolvimento.
+- CRUD completo de clientes
+- Cadastro de:
+  - Nome
+  - CPF/CNPJ
+  - Email
+  - Status
+- Validação de CPF/CNPJ
+- Validação de email
+- Máscara automática para CPF/CNPJ
+- Busca e paginação
 
 ---
 
-### 🐳 Tecnologias
+## 🛠 Serviços
 
-- **PHP 8.4** — https://www.php.net/
-- **Laravel 12** — https://laravel.com/
-- **Vue.js 3** — https://vuejs.org/
-- **Inertia.js** — https://inertiajs.com/
-- **Vuetify** — https://vuetifyjs.com/
-- **MySQL 8** — https://www.mysql.com/
-- **Docker** — https://www.docker.com/
-- **Vite** — https://vitejs.dev/
-- **PhpMyAdmin** — https://www.phpmyadmin.net/
+- CRUD completo de serviços
+- Cadastro de:
+  - Nome
+  - Valor base mensal
+- Busca e paginação
+- Atualização dinâmica sem reload
 
-### 🚀 Instalação
+---
 
-#### Clonar o projeto
+## 📄 Contratos
+
+- CRUD completo de contratos
+- Relacionamento entre clientes e contratos
+- Cadastro de:
+  - Cliente
+  - Data de início
+  - Data de término
+  - Status
+- Adição e remoção de serviços vinculados
+- Bloqueio de edição para contratos cancelados
+
+---
+
+## 📦 Itens do Contrato
+
+Cada contrato pode possuir múltiplos serviços vinculados contendo:
+
+- Serviço
+- Quantidade
+- Valor unitário personalizado
+
+---
+
+## 💰 Cálculo Dinâmico do Contrato
+
+O valor total do contrato é calculado dinamicamente com base nos itens cadastrados.
+
+### Exemplo
+
+| Serviço | Quantidade | Valor |
+|---|---|---|
+| Serviço A | 2 | R$ 100 |
+| Serviço B | 1 | R$ 200 |
+
+### Total
+
+```text
+R$ 400,00
 ```
-git clone https://github.com/edutorquato/crypticKey.git
-cd crypticKey
+
+---
+
+# 🧠 Regra de Negócio
+
+Foi implementada uma regra adicional utilizando Service Layer.
+
+### Regra aplicada
+
+- Contratos acima de R$1000 recebem 10% de desconto automático.
+
+A lógica foi implementada de forma desacoplada para facilitar futuras expansões e manutenção do sistema.
+
+---
+
+# 🏗 Arquitetura
+
+O projeto foi estruturado utilizando separação clara de responsabilidades:
+
+- Controllers
+- Models
+- Services
+- Pages Vue
+- Layouts
+- Rotas organizadas
+
+A lógica de negócio foi centralizada em Services para manter os controllers mais limpos e facilitar manutenção futura.
+
+---
+
+# 🐳 Tecnologias
+
+## ⚙ Backend
+
+- PHP 8
+- Laravel 12
+- MySQL
+
+## 🎨 Frontend
+
+- Vue.js 3
+- Inertia.js
+- Vuetify
+
+## 🔐 Autenticação
+
+- Laravel Breeze
+
+## 🐳 Infraestrutura
+
+- Docker
+- Docker Compose
+
+---
+
+# ✨ Experiência do Usuário
+
+O frontend foi desenvolvido utilizando arquitetura SPA com Inertia.js, proporcionando:
+
+- Navegação sem reload
+- Atualização dinâmica dos dados
+- Snackbar de feedback
+- Busca em tabelas
+- Paginação
+- Interface responsiva
+
+---
+
+# ⚙ Como Executar o Projeto
+
+## 📥 Clonar repositório
+
+```bash
+git clone URL_DO_REPOSITORIO
 ```
 
-#### Criar arquivo .env
-```
+---
+
+## 📄 Configurar ambiente
+
+```bash
 cp .env.example .env
 ```
 
-#### Subir containers
-```
-docker compose up -d --build
+---
+
+## 🐳 Subir containers
+
+```bash
+docker compose up -d
 ```
 
-#### Instalar dependências do projeto
-```
-docker compose exec app composer install
-docker compose exec app npm install
-docker compose exec app npm install vuetify
-docker compose exec app npm install @mdi/font
+---
+
+## 📦 Instalar dependências
+
+```bash
+composer install
+
+npm install
 ```
 
-#### Gerar chave da aplicação
-```
-docker compose exec app php artisan key:generate
+---
+
+## 🔑 Gerar chave da aplicação
+
+```bash
+php artisan key:generate
 ```
 
-#### Criar link de storage
-```
-docker compose exec app php artisan storage:link
+---
+
+## 🗄 Rodar migrations
+
+```bash
+php artisan migrate
 ```
 
-#### Rodar migrations e Popular usuários e dados iniciais
-```
-docker compose exec app php artisan migrate --seed
+---
+
+## 🚀 Executar frontend
+
+```bash
+npm run dev
 ```
 
-### 🧪 Comandos Úteis
+---
 
-#### Limpar cache
-```
-docker compose exec app php artisan optimize
-```
-#### Rodar migrations novamente
-```
-docker compose exec app php artisan migrate:fresh --seed
-```
-#### Acessar container
-```
-docker compose exec app bash
-```
+# 🎯 Objetivo do Projeto
 
-### 🌐 Acessos
+O projeto foi desenvolvido com foco em:
 
-- Ambiente Local: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- PhpMyAdmin: [http://127.0.0.1:8002](http://127.0.0.1:8002)
+- Organização de código
+- Estruturação de regras de negócio
+- Separação de responsabilidades
+- Arquitetura limpa
+- Experiência SPA com Vue.js
+- Facilidade de manutenção e expansão futura

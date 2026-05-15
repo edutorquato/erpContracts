@@ -11,11 +11,11 @@
 </script>
 
 <template>
-    
+
     <Head title="Dashboard" />
     
     <AppLayout>
-    
+
         <div class="mb-6">
             <h1 class="text-h5 font-weight-medium">
                 Dashboard
