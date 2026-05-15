@@ -121,6 +121,7 @@ A lógica de negócio foi centralizada em Services para manter os controllers ma
 ## 🔐 Autenticação
 
 - Laravel Breeze
+
 admin@admin.com
 admin123
 
