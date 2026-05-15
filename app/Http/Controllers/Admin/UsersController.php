@@ -15,32 +15,10 @@ class UsersController extends Controller
 
         $user = auth()->user();
 
-        $users = User::where('status', 1)
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-        //dd('teste', $users);
-
         return Inertia::render('Admin/Users/Index', [
             'user' => $user,
-            'users' => $users,
         ]);
 
-    }
-
-    public function edit(User $user)
-    {
-        //
-    }
-
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    public function show(User $user)
-    {
-        //
     }
 
 }

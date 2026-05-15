@@ -160,13 +160,13 @@
             id: contract.id,
             client_id: contract.client_id,
             
-start_date: contract.start_date
-    ? contract.start_date.split('T')[0]
-    : '',
+            start_date: contract.start_date
+            ? contract.start_date.split('T')[0]
+            : '',
 
-end_date: contract.end_date
-    ? contract.end_date.split('T')[0]
-    : '',
+            end_date: contract.end_date
+            ? contract.end_date.split('T')[0]
+            : '',
             
             status: contract.status,
 
@@ -343,15 +343,15 @@ max-width="1000"
 
             <v-col cols="12" md="6">
 
-<v-select
-    v-model="form.client_id"
-    :items="clients"
-    item-title="name"
-    item-value="id"
-    label="Cliente"
-    variant="outlined"
-    density="comfortable"
-/>
+                <v-select
+                v-model="form.client_id"
+                :items="clients"
+                item-title="name"
+                item-value="id"
+                label="Cliente"
+                variant="outlined"
+                density="comfortable"
+                />
 
             </v-col>
 

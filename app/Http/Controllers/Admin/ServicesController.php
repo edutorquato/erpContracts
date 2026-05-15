@@ -26,10 +26,9 @@ class ServicesController extends Controller
         $service = Service::create($request->all());
 
         return response()->json([
-    'success' => true,
-    'service' => $service
-]);
-
+            'success' => true,
+            'service' => $service
+        ]);
 
     }
 
@@ -42,12 +41,12 @@ class ServicesController extends Controller
 
         $service->update($request->all());
 
-$service->refresh();
+        $service->refresh();
 
-return response()->json([
-    'success' => true,
-    'service' => $service
-]);
+        return response()->json([
+            'success' => true,
+            'service' => $service
+        ]);
 
     }
 

@@ -1,272 +1,226 @@
 <script setup>
 
-import AppLayout from '@/Layouts/AppLayoutAdmin.vue'
-import { Head } from '@inertiajs/vue3'
-import { ref } from 'vue'
-import axios from 'axios'
+    import AppLayout from '@/Layouts/AppLayoutAdmin.vue'
+    import { Head } from '@inertiajs/vue3'
+    import { ref } from 'vue'
+    import axios from 'axios'
+    import {formatCpfCnpj} from '@/Utils/document'
+    import {isValidCpfCnpj, isValidEmail} from '@/Validators/client'
 
-import {
-    formatCpfCnpj
-} from '@/Utils/document'
+    const props = defineProps({
+        clients: Array
+    })
 
-import {
-    isValidCpfCnpj,
-    isValidEmail
-} from '@/Validators/client'
+    const clients = ref([...props.clients])
+    const loading = ref(false)
+    const dialog = ref(false)
+    const errors = ref({})
+    const snackbar = ref(false)
+    const snackbarText = ref('')
+    const snackbarColor = ref('success')
 
-const props = defineProps({
-    clients: Array
-})
+    const search = ref('')
 
-const clients = ref([...props.clients])
-
-const loading = ref(false)
-
-const dialog = ref(false)
-
-const errors = ref({})
-
-const snackbar = ref(false)
-
-const snackbarText = ref('')
-
-const snackbarColor = ref('success')
-
-
-const search = ref('')
-
-const form = ref({
-    id: null,
-    name: '',
-    document: '',
-    email: '',
-    status: 'active',
-})
-
-const headers = [
-    { title: 'Nome', key: 'name' },
-    { title: 'Documento', key: 'document' },
-    { title: 'Email', key: 'email' },
-    { title: 'Status', key: 'status' },
-    { title: 'Ações', key: 'actions', sortable: false },
-]
-
-const showSnackbar = (
-    text,
-    color = 'success'
-) => {
-
-    snackbarText.value = text
-
-    snackbarColor.value = color
-
-    snackbar.value = true
-}
-
-const nameRules = [
-    v => !!v || 'Nome obrigatório',
-]
-
-const emailRules = [
-    v => !!v || 'Email obrigatório',
-    v => isValidEmail(v) || 'Email inválido',
-]
-
-const documentRules = [
-    v => !!v || 'CPF/CNPJ obrigatório',
-    v => isValidCpfCnpj(v) || 'CPF/CNPJ inválido',
-]
-
-const openCreate = () => {
-
-    errors.value = {}
-
-    form.value = {
+    const form = ref({
         id: null,
         name: '',
         document: '',
         email: '',
         status: 'active',
+    })
+
+    const headers = [
+        { title: 'Nome', key: 'name' },
+        { title: 'Documento', key: 'document' },
+        { title: 'Email', key: 'email' },
+        { title: 'Status', key: 'status' },
+        { title: 'Ações', key: 'actions', sortable: false },
+    ]
+
+    const showSnackbar = (
+        text,
+        color = 'success'
+        ) => {
+
+        snackbarText.value = text
+
+        snackbarColor.value = color
+
+        snackbar.value = true
     }
 
-    dialog.value = true
-}
+    const nameRules = [
+        v => !!v || 'Nome obrigatório',
+    ]
 
-const edit = (client) => {
+    const emailRules = [
+        v => !!v || 'Email obrigatório',
+        v => isValidEmail(v) || 'Email inválido',
+    ]
 
-    errors.value = {}
+    const documentRules = [
+        v => !!v || 'CPF/CNPJ obrigatório',
+        v => isValidCpfCnpj(v) || 'CPF/CNPJ inválido',
+    ]
 
-    form.value = {
-        ...client
+    const openCreate = () => {
+
+        errors.value = {}
+
+        form.value = {
+            id: null,
+            name: '',
+            document: '',
+            email: '',
+            status: 'active',
+        }
+
+        dialog.value = true
     }
 
-    dialog.value = true
-}
+    const edit = (client) => {
 
-const save = async () => {
+        errors.value = {}
 
-    loading.value = true
+        form.value = {
+            ...client
+        }
 
-    errors.value = {}
+        dialog.value = true
+    }
 
-    try {
+    const save = async () => {
 
-        let response
+        loading.value = true
 
-        // UPDATE
+        errors.value = {}
 
-        if (form.value.id) {
+        try {
 
-            response = await axios.put(
-                `/admin/clients/${form.value.id}`,
-                form.value
-            )
+            let response
 
-            const index = clients.value.findIndex(
-                client => client.id == form.value.id
-            )
+            if (form.value.id) {
 
-            clients.value[index] = response.data.client
+                response = await axios.put(`/admin/clients/${form.value.id}`, form.value)
 
-            showSnackbar(
-                'Cliente atualizado com sucesso'
-            )
+                const index = clients.value.findIndex(
+                    client => client.id == form.value.id
+                    )
 
-        } else {
+                clients.value[index] = response.data.client
+
+                showSnackbar(
+                    'Cliente atualizado com sucesso'
+                    )
+
+            } else {
 
             // CREATE
 
-            response = await axios.post(
-                '/admin/clients',
-                form.value
-            )
+                response = await axios.post(
+                    '/admin/clients',
+                    form.value
+                    )
 
-            clients.value.unshift(
-                response.data.client
-            )
+                clients.value.unshift(
+                    response.data.client
+                    )
+
+                showSnackbar(
+                    'Cliente criado com sucesso'
+                    )
+            }
+
+            dialog.value = false
+
+        } catch (error) {
+
+            if (error.response?.status === 422) {
+
+                errors.value = error.response.data.errors
+            }
 
             showSnackbar(
-                'Cliente criado com sucesso'
-            )
+                'Erro ao salvar cliente',
+                'error'
+                )
+
+        } finally {
+
+            loading.value = false
+        }
+    }
+
+    const remove = async (client) => {
+
+        if (!confirm('Deseja remover este cliente?')){
+            return  
+        } 
+
+        try {
+
+            await axios.delete(`/admin/clients/${client.id}`)
+
+            clients.value = clients.value.filter(item => item.id !== client.id)
+
+            showSnackbar('Cliente removido com sucesso')
+
+        } catch {
+            showSnackbar('Erro ao remover cliente', 'error')
         }
 
-        dialog.value = false
-
-    } catch (error) {
-
-        if (error.response?.status === 422) {
-
-            errors.value = error.response.data.errors
-        }
-
-        showSnackbar(
-            'Erro ao salvar cliente',
-            'error'
-        )
-
-    } finally {
-
-        loading.value = false
     }
-}
-
-const remove = async (client) => {
-
-    if (!confirm(
-        'Deseja remover este cliente?'
-    )) return
-
-    try {
-
-        await axios.delete(
-            `/admin/clients/${client.id}`
-        )
-
-        clients.value = clients.value.filter(
-            item => item.id !== client.id
-        )
-
-        showSnackbar(
-            'Cliente removido com sucesso'
-        )
-
-    } catch {
-
-        showSnackbar(
-            'Erro ao remover cliente',
-            'error'
-        )
-    }
-}
 
 </script>
 
 <template>
 
-<Head title="Clientes" />
+    <Head title="Clientes" />
 
+    <v-snackbar v-model="snackbar" :color="snackbarColor" timeout="3000">
+        {{ snackbarText }}
+    </v-snackbar>
 
-<v-snackbar
-    v-model="snackbar"
-    :color="snackbarColor"
-    timeout="3000"
->
+    <AppLayout>
 
-    {{ snackbarText }}
+        <div class="d-flex justify-space-between align-center mb-6">
 
-</v-snackbar>
+            <div>
 
+                <h1 class="text-h5 font-weight-medium">
+                    Clientes
+                </h1>
 
-<AppLayout>
+            </div>
 
-    <div class="d-flex justify-space-between align-center mb-6">
-
-        <div>
-
-            <h1 class="text-h5 font-weight-medium">
-                Clientes
-            </h1>
+            <v-btn color="primary" @click="openCreate">
+                Novo Cliente
+            </v-btn>
 
         </div>
 
-        <v-btn
-            color="primary"
-            @click="openCreate"
-        >
-            Novo Cliente
-        </v-btn>
+        <v-card rounded="lg">
 
-    </div>
+            <v-text-field
+            v-model="search"
+            label="Buscar cliente"
+            prepend-inner-icon="mdi-magnify"
+            variant="outlined"
+            density="comfortable"
+            hide-details
+            class="ma-4"
+            />
 
-    <v-card rounded="lg">
-
-        <v-text-field
-    v-model="search"
-    label="Buscar cliente"
-    prepend-inner-icon="mdi-magnify"
-    variant="outlined"
-    density="comfortable"
-    hide-details
-    class="ma-4"
-/>
-
-<v-data-table
-    :headers="headers"
-    :items="clients"
-    :search="search"
-    :items-per-page="10"
->
+            <v-data-table
+            :headers="headers"
+            :items="clients"
+            :search="search"
+            :items-per-page="10"
+            >
 
             <template v-slot:item.status="{ item }">
 
-                <v-chip
-                    :color="
-                        item.status == 'active'
-                        ? 'success'
-                        : 'error'
-                    "
-                    size="small"
-                >
+                <v-chip :color=" item.status == 'active' ? 'success' : 'error'" size="small">
                     {{
                         item.status == 'active'
                         ? 'Ativo'
@@ -280,21 +234,11 @@ const remove = async (client) => {
 
                 <div class="d-flex ga-2">
 
-                    <v-btn
-                        size="small"
-                        color="primary"
-                        variant="tonal"
-                        @click="edit(item)"
-                    >
+                    <v-btn size="small" color="primary" variant="tonal" @click="edit(item)">
                         Editar
                     </v-btn>
 
-                    <v-btn
-                        size="small"
-                        color="error"
-                        variant="tonal"
-                        @click="remove(item)"
-                    >
+                    <v-btn size="small" color="error" variant="tonal" @click="remove(item)">
                         Excluir
                     </v-btn>
 
@@ -306,10 +250,7 @@ const remove = async (client) => {
 
     </v-card>
 
-    <v-dialog
-        v-model="dialog"
-        max-width="600"
-    >
+    <v-dialog v-model="dialog" max-width="600">
 
         <v-card rounded="lg">
 
@@ -324,73 +265,73 @@ const remove = async (client) => {
             <v-card-text>
 
                 <v-text-field
-                    v-model="form.name"
-                    label="Nome"
-                    :rules="nameRules"
-                    :error-messages="errors.name"
+                v-model="form.name"
+                label="Nome"
+                :rules="nameRules"
+                :error-messages="errors.name"
                 />
 
                 <v-text-field
-                    v-model="form.document"
-                    label="CPF/CNPJ"
-                    class="mt-4"
-                    :rules="documentRules"
-                    :error-messages="errors.document"
-                    @update:modelValue="
-                        form.document = formatCpfCnpj($event)
-                    "
+                v-model="form.document"
+                label="CPF/CNPJ"
+                class="mt-4"
+                :rules="documentRules"
+                :error-messages="errors.document"
+                @update:modelValue="
+                form.document = formatCpfCnpj($event)
+                "
                 />
 
                 <v-text-field
-                    v-model="form.email"
-                    label="Email"
-                    class="mt-4"
-                    :rules="emailRules"
-                    :error-messages="errors.email"
+                v-model="form.email"
+                label="Email"
+                class="mt-4"
+                :rules="emailRules"
+                :error-messages="errors.email"
                 />
 
                 <v-select
-                    v-model="form.status"
-                    label="Status"
-                    class="mt-4"
-                    :items="[
-                        {
-                            title: 'Ativo',
-                            value: 'active'
-                        },
-                        {
-                            title: 'Inativo',
-                            value: 'inactive'
-                        }
+                v-model="form.status"
+                label="Status"
+                class="mt-4"
+                :items="[
+                    {
+                        title: 'Ativo',
+                        value: 'active'
+                    },
+                    {
+                        title: 'Inativo',
+                        value: 'inactive'
+                    }
                     ]"
-                />
+                    />
 
-            </v-card-text>
+                </v-card-text>
 
-            <v-card-actions>
+                <v-card-actions>
 
-                <v-spacer />
+                    <v-spacer />
 
-                <v-btn
+                    <v-btn
                     variant="text"
                     @click="dialog = false"
-                >
+                    >
                     Cancelar
                 </v-btn>
 
                 <v-btn
-                    color="primary"
-                    :loading="loading"
-                    @click="save"
+                color="primary"
+                :loading="loading"
+                @click="save"
                 >
-                    Salvar
-                </v-btn>
+                Salvar
+            </v-btn>
 
-            </v-card-actions>
+        </v-card-actions>
 
-        </v-card>
+    </v-card>
 
-    </v-dialog>
+</v-dialog>
 
 </AppLayout>
 
